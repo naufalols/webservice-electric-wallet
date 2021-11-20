@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Illuminate\Support\Str;
 
-class UserBalanceController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +28,17 @@ class UserBalanceController extends Controller
      */
     public function create()
     {
-        //
+        $credentials = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required',
+        ]);
+
+       
+
+        $result = array('error' => 'yaa', );
+
+        return json_encode($result);
     }
 
     /**
@@ -36,7 +49,33 @@ class UserBalanceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = FacadesValidator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|unique:users,email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'remember_token' => Str::random(10),
+
+        ]);
+        $data['status'] = 200;
+        $data['result'] = 'user berhasil ditambahkan';
+
+        return response()->json($data, 200);
+
+
+
+        // $result = array('error' => 'yaa', );
+
+        // return json_encode($result);
     }
 
     /**
