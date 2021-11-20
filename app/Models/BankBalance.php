@@ -4,21 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class UserBalance extends Model
+class BankBalance extends Model
 {
-    use HasFactory;
-
+    use HasFactory, HasApiTokens;
     /**
      * The attributes that are mass assignable.
      *
      * @var string[]
      */
     protected $fillable = [
-        'userid',
         'balance',
-        'balanceArchieve',
+        'balance_archieve',
+        'code',
+        'enable',
     ];
 
-    protected $table = 'user_balance';
+    protected $table = 'bank_balance';
 }
