@@ -16,10 +16,10 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            $user = auth()->user();
-            $token = $request->user()->createToken('login-client');
+            $user   = auth()->user();
+            $token  = $request->user()->createToken('login-client');
             return response()->json([
-                'data' => $user,
+                'data'  => $user,
                 'token' => $token
             ]);
         }
