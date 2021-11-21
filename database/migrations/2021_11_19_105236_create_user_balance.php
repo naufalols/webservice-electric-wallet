@@ -17,7 +17,7 @@ class CreateUserBalance extends Migration
             $table->id();
             $table->integer('userid');
             $table->string('balance');
-            $table->integer('balanceArchieve');
+            $table->integer('balanceAchieve');
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ class CreateBankBalance extends Migration
         Schema::create('bank_balance', function (Blueprint $table) {
             $table->id();
             $table->integer('balance');
-            $table->integer('balance_archieve');
+            $table->integer('balance_achieve');
             $table->string('code');
             $table->boolean('enable');
             $table->timestamps();
