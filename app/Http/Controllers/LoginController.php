@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\HasApiTokens;
 
 class LoginController extends Controller
 {
+    use HasApiTokens;
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
@@ -21,11 +23,22 @@ class LoginController extends Controller
             return response()->json([
                 'data'  => $user,
                 'token' => $token
-            ]);
+            ], 200);
         }
 
-        $result = array('email' => 'The provided credentials do not match our records.', );
+        $data['status'] = 401;
+        $data['message'] = 'Unauthorized';
 
-        return json_encode($result);
+        return response()->json($data, 401);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+        
+        $data['status'] = 200;
+        $data['message'] = 'logout successfully';
+
+        return response()->json($data, 200);
     }
 }

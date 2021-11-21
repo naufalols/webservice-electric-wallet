@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserBalanceController;
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('user', UserController::class);
     Route::post('userTransactionTransfer', [UserTransactionController::class, 'transactionTransfer']);
     Route::resource('userTransaction', UserTransactionController::class);
+    Route::post('logout', [LoginController::class, 'logout']);
 });
 
 

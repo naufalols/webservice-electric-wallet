@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -104,12 +105,12 @@ class UserTransactionController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $usersAmount = DB::table('user_balance')
+        $usersAmountBefore = DB::table('user_balance')
             ->select('balance')
             ->where('userid', $request->userid)
             ->get();
 
-        if ($usersAmount[0]->balance < $request->amount) {
+        if ($usersAmountBefore[0]->balance < $request->amount) {
             $data['status'] = 422;
             $data['message'] = 'your amount balance is not enough';
 
@@ -119,15 +120,60 @@ class UserTransactionController extends Controller
 
         DB::beginTransaction();
 
+        // increment recipient amount
+        $toUsersAmountBefore = DB::table('user_balance')
+            ->select('balance')
+            ->where('userid', $request->touserid)
+            ->get();
 
         DB::table('user_balance')
-              ->where('userid', $request->touserid)
-              ->increment('balance', $request->amount);
+            ->where('userid', $request->touserid)
+            ->increment('balance', $request->amount);
 
+        $toUsersAmountAfter = DB::table('user_balance')
+            ->select('balance')
+            ->where('userid', $request->touserid)
+            ->get();
 
+        DB::table('user_balance_history')->insert([
+            'userBalanceId' => $request->touserid,
+            'balanceBefore' => $toUsersAmountBefore[0]->balance,
+            'balanceAfter' => $toUsersAmountAfter[0]->balance,
+            'activity' => 'receive',
+            'type' => 'kredit',
+            'ip' => '',
+            'location' => '',
+            'userAgent' => '',
+            'author' => '',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
+        // decrement sender amount
         DB::table('user_balance')
-              ->where('userid', $request->userid)
-              ->decrement('balance', $request->amount);
+            ->where('userid', $request->userid)
+            ->decrement('balance', $request->amount);
+
+        $usersAmountAfter = DB::table('user_balance')
+            ->select('balance')
+            ->where('userid', $request->userid)
+            ->get();
+
+        DB::table('user_balance_history')->insert([
+            'userBalanceId' => $request->userid,
+            'balanceBefore' => $usersAmountBefore[0]->balance,
+            'balanceAfter' => $usersAmountAfter[0]->balance,
+            'activity' => 'send',
+            'type' => 'debit',
+            'ip' => '',
+            'location' => '',
+            'userAgent' => '',
+            'author' => '',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
+
         DB::commit();
 
 
@@ -136,5 +182,17 @@ class UserTransactionController extends Controller
 
 
         return response()->json($data, 200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function transactionTopUp(Request $request)
+    {
     }
 }
