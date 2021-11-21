@@ -106,17 +106,23 @@ class UserTransactionController extends Controller
         }
 
         $usersAmountBefore = DB::table('user_balance')
-            ->select('balance')
+            ->select('user_balance.balance', 'users.remember_token')
             ->where('userid', $request->userid)
+            ->join('users', 'users.id', '=', 'user_balance.userid')
             ->get();
+
+        if ($usersAmountBefore[0]->remember_token != $request->user_token) {
+            $data['status'] = 422;
+            $data['message'] = 'Unprocessable Entity';
+            return response()->json($data, 422);
+        }
+
 
         if ($usersAmountBefore[0]->balance < $request->amount) {
             $data['status'] = 422;
             $data['message'] = 'your amount balance is not enough';
-
             return response()->json($data, 422);
         }
-
 
         DB::beginTransaction();
 
@@ -194,6 +200,56 @@ class UserTransactionController extends Controller
 
     public function transactionTopUp(Request $request)
     {
-        
+        $validator = Validator::make($request->all(), [
+            'user_token' => 'required|exists:users,remember_token',
+            'userid' => 'required|exists:users,id',
+            'amount' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $userCheck = DB::table('user_balance')
+            ->select('user_balance.balance', 'users.remember_token')
+            ->where('userid', $request->userid)
+            ->join('users', 'users.id', '=', 'user_balance.userid')
+            ->get();
+
+        if ($userCheck[0]->remember_token != $request->user_token) {
+            $data['status'] = 422;
+            $data['message'] = 'Unprocessable Entity';
+            return response()->json($data, 422);
+        }
+
+        DB::beginTransaction();
+
+        DB::table('user_balance')
+            ->where('userid', $request->userid)
+            ->increment('balance', $request->amount);
+
+        $userCheckAfter = DB::table('user_balance')
+            ->select('balance')
+            ->where('userid', $request->userid)
+            ->get();
+
+        DB::table('user_balance_history')->insert([
+            'userBalanceId' => $request->userid,
+            'balanceBefore' => $userCheck[0]->balance,
+            'balanceAfter' => $userCheckAfter[0]->balance,
+            'activity' => 'topup',
+            'type' => 'kredit',
+            'ip' => '',
+            'location' => '',
+            'userAgent' => '',
+            'author' => '',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        DB::commit();
+
+        $data['status'] = 200;
+        $data['message'] = 'successful topup';
+        return response()->json($data, 200);
     }
 }
