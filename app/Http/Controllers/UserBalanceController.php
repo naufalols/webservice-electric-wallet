@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserBalanceController extends Controller
 {
@@ -47,7 +48,15 @@ class UserBalanceController extends Controller
      */
     public function show($id)
     {
-        //
+        $userBalance = DB::table('users')
+                        ->leftJoin('user_balance', 'users.id', '=', 'user_balance.userid')
+                        ->where('users.id', '=', $id)
+                        ->get();
+
+        $data['status'] = 200;
+        $data['message'] = $userBalance;
+
+        return response()->json($data, 200);
     }
 
     /**

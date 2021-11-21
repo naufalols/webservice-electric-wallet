@@ -15,8 +15,8 @@ class BankBalanceFactory extends Factory
     public function definition()
     {
         return [
-            'balance' => $this->faker->numberBetween($min = 1000, $max = 2000000),
-            'balance_archieve' => $this->faker->numberBetween($min = 1000, $max = 2000000),
+            'balance' => 20000,
+            'balance_archieve' => 0,
             'code' => Str::random(6),
             'enable' => true,
         ];

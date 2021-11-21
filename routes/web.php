@@ -14,8 +14,8 @@ use App\Http\Controllers\LoginController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('login');
+});
 
 Route::post('/auth', [LoginController::class, 'authenticate']);

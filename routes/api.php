@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserBalanceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,10 @@ use App\Http\Controllers\UserController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('userBalance', UserBalanceController::class);
     Route::resource('user', UserController::class);
+    Route::post('userTransactionTransfer', [UserTransactionController::class, 'transactionTransfer']);
+    Route::resource('userTransaction', UserTransactionController::class);
 });
+
 
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

@@ -28,17 +28,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $credentials = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email:rfc,dns',
-            'password' => 'required',
-        ]);
-
-       
-
-        $result = array('error' => 'yaa', );
-
-        return json_encode($result);
+        //
     }
 
     /**
@@ -67,7 +57,7 @@ class UserController extends Controller
 
         ]);
         $data['status'] = 200;
-        $data['result'] = 'user berhasil ditambahkan';
+        $data['message'] = 'user successfully added';
 
         return response()->json($data, 200);
 

@@ -19,8 +19,10 @@ class UserBalanceFactory extends Factory
 
         return [
             'userid' => $this->faker->unique()->randomElement($user),
-            'balance' => $this->faker->numberBetween($min = 1000, $max = 10000),
-            'balanceArchieve' => $this->faker->numberBetween($min = 1000, $max = 2000000),
+            'balance' => 0,
+            'balanceArchieve' => 0,
+            // 'balance' => $this->faker->numberBetween($min = 1000, $max = 10000),
+            // 'balanceArchieve' => $this->faker->numberBetween($min = 1000, $max = 2000000),
         ];
     }
 }
