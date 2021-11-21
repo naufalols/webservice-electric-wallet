@@ -29,6 +29,7 @@ Dalam web service ini memiliki 4 endpoint
 
 Buka database lalu buka table users kemudian pilih salah satu users
 ### 1. Login
+endpoint http://base_url/auth
 ```php
 <?php
 
@@ -88,6 +89,7 @@ response dari endpoint ini adalah
 copy bearer token dari json plainTextToken untuk digunakan mengakses endpoint lainnya
 
 ### 2. User Top Up
+endpoint http://base_url/api/userTransactionTopUp
 ada 4 form body yang harus diisi yaitu 
 - user_token (harus sama dengan user yang telah login, user_token tersedia di tanle users)
 - userid
@@ -98,7 +100,7 @@ ada 4 form body yang harus diisi yaitu
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-  CURLOPT_URL => 'http://127.0.0.1:8001/api/userTransactionTopUp',
+  CURLOPT_URL => 'http://base_url/api/userTransactionTopUp',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -129,6 +131,7 @@ response dari endpoint ini adalah
 ```
 
 ### 3. User Transfer
+endpoint http://base_url/api/userTransactionTransfer
 ada 4 form body yang harus diisi yaitu 
 - user_token (harus sama dengan user yang telah login, user_token tersedia di table users)
 - userid
@@ -140,7 +143,7 @@ ada 4 form body yang harus diisi yaitu
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-  CURLOPT_URL => 'http://127.0.0.1:8001/api/userTransactionTransfer',
+  CURLOPT_URL => 'http://base_url/api/userTransactionTransfer',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -209,6 +212,47 @@ hasil dari endpoint ini adalah
             "balance": "5200"
         }
     ]
+}
+```
+
+### 5. Logout
+endpoint http://base_url/api/logout
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => 'http://base_url/api/logout',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 0,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_POSTFIELDS =>'{
+    "email": "rveum@example.org"
+}',
+  CURLOPT_HTTPHEADER => array(
+    'Accept: application/json',
+    'Authorization: Bearer 4|WLHAFyrkl5snMwPHq3hfl6Abtg0QBa84VIFFvTuE',
+    'Content-Type: application/json',
+    'Cookie: XSRF-TOKEN=eyJpdiI6Ik44TGd4MjJYdVdUbW5lTWpQNDI5UEE9PSIsInZhbHVlIjoiUTE5Q3FlUUJuTk11b0hYbitNRkVSSENkVXRrSUU4T3N1b2d5bzlIUEljcktFb1ZDczJvKytrSnZCNnhqWXI1SVdTZXJoeFVIMlNDOHJub1Nkc3IvNDdjNkNXdVNkS1V4c1JKci9zTEhPdmxFR2IyTHA2cDROQWdQdHlkaXB2bWgiLCJtYWMiOiI1OTI0M2I1OTEwZGJjYjAxYTc3YTQ0MzAzYjcxZTM1MTIxNGZjMmJjY2I3ZWRlYWEyZDk4YjIxZTg2MDVhMTk3IiwidGFnIjoiIn0%3D; electricwallet_session=eyJpdiI6IlljOEEzN0tUWUcrTVFGVTN2RWprb2c9PSIsInZhbHVlIjoiZnY5c05US0xLTzl2Vk9xQU54Yi9uZWh2NTNpQUdaTm1GM0VxWnU3ZnYveDNqVWtaNjRQUXM1SEtyeHZERTBPRVB6YktOanIvM21VN2tlcmg5cXh4UXp4S2YzZ2hFK096OE52akNzclk5RDhxekxucmVrbGRFbDRqVWl2VEFnQXgiLCJtYWMiOiIwN2MwYTFhODYyNTAwMDNlNmI3ZDJlYjUwYmNkMWU4YjE2NGNhZGM3MTY2NmMxNGIxYmQ1YzE3ZTdjZTdkZDA0IiwidGFnIjoiIn0%3D'
+  ),
+));
+
+$response = curl_exec($curl);
+
+curl_close($curl);
+echo $response;
+
+```
+hasil dari response ini adalah
+```json
+{
+    "status": 200,
+    "message": "logout successfully"
 }
 ```
 ## Last but not Least
