@@ -32,8 +32,9 @@ class LoginController extends Controller
         return response()->json($data, 401);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
+        
         auth()->user()->tokens()->delete();
         
         $data['status'] = 200;

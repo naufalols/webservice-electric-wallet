@@ -49,6 +49,7 @@ class UserBalanceController extends Controller
     public function show($id)
     {
         $userBalance = DB::table('users')
+                        ->select('users.id', 'users.email', 'user_balance.balance')
                         ->leftJoin('user_balance', 'users.id', '=', 'user_balance.userid')
                         ->where('users.id', '=', $id)
                         ->get();

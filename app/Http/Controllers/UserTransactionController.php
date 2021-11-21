@@ -97,7 +97,7 @@ class UserTransactionController extends Controller
         $validator = Validator::make($request->all(), [
             'user_token' => 'required|exists:users,remember_token',
             'userid' => 'required|exists:users,id',
-            'amount' => 'required',
+            'amount' => 'required|digits_between:4,13',
             'touserid' => 'required|exists:users,id',
         ]);
 
@@ -203,7 +203,7 @@ class UserTransactionController extends Controller
         $validator = Validator::make($request->all(), [
             'user_token' => 'required|exists:users,remember_token',
             'userid' => 'required|exists:users,id',
-            'amount' => 'required',
+            'amount' => 'required|digits_between:4,13',
         ]);
 
         if ($validator->fails()) {
