@@ -23,6 +23,9 @@ php artisan migrate
 # seeding table
 php artisan db:seed
 
+# key generate
+php artisan key:generate
+
 # run server
 php artisan serve
 ```
